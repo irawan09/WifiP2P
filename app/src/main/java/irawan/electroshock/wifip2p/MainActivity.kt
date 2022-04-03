@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
-import androidx.core.content.getSystemService
 import irawan.electroshock.wifip2p.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -49,7 +48,6 @@ class MainActivity : AppCompatActivity() {
                     binding.onOff.text = getString(R.string.off)
                 } else {
                     startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                    wifiManager.setWifiEnabled(true)
                     binding.onOff.text = getString(R.string.off)
                 }
             } else {
@@ -58,7 +56,6 @@ class MainActivity : AppCompatActivity() {
                     binding.onOff.text = getString(R.string.on)
                 } else {
                     startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                    wifiManager.setWifiEnabled(true)
                     binding.onOff.text = getString(R.string.on)
                 }
             }
