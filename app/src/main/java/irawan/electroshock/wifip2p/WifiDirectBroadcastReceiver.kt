@@ -51,7 +51,6 @@ class WifiDirectBroadcastReceiver(
                 }
 
             }
-//                Log.i("Peer-list Adapter", "${mActivity.peerListListener}")
             mManager.requestPeers(mChannel, mActivity.peerListListener)
             }
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {

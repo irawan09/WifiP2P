@@ -132,33 +132,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val peerListListener = object : WifiP2pManager.PeerListListener{
-        override fun onPeersAvailable(peerList: WifiP2pDeviceList?) {
-            if(!peerList?.deviceList?.equals(peers)!!){
-                peers.clear()
-                peers.addAll(peerList.deviceList)
+    val peerListListener = WifiP2pManager.PeerListListener { peerList ->
+        val refreshedPeers = peerList?.deviceList
+        if(!refreshedPeers?.equals(peers)!!){
+            peers.clear()
+            peers.addAll(peerList.deviceList)
 
-                deviceNameArray = arrayOfNulls<String>(peerList.deviceList.size)
-                deviceArray = arrayOfNulls<WifiP2pDevice>(peerList.deviceList.size)
-                var index = 0
-                peerList.deviceList.forEach { device ->
-                    deviceNameArray[index] = device.deviceName
-                    deviceArray[index] = device
-                    index++
-                }
+            deviceNameArray = arrayOfNulls<String>(peerList.deviceList.size)
+            deviceArray = arrayOfNulls<WifiP2pDevice>(peerList.deviceList.size)
+            var index = 0
+            peerList.deviceList.forEach { device ->
+                deviceNameArray[index] = device.deviceName
+                deviceArray[index] = device
+                index++
+            }
 
-                val deviceNameAdapter: ArrayAdapter<String> = ArrayAdapter(
-                    applicationContext,
+            val deviceNameAdapter: ArrayAdapter<String> = ArrayAdapter(
+                applicationContext,
                 android.R.layout.simple_list_item_1,
                 deviceNameArray)
-                binding.peerListView.adapter = deviceNameAdapter
-            }
-
-            if (peers.size == 0){
-                makeText(applicationContext,"No Device Found", Toast.LENGTH_LONG).show()
-            }
+            binding.peerListView.adapter = deviceNameAdapter
         }
 
+        if (peers.isEmpty()){
+            makeText(applicationContext,"No Device Found", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onResume() {
