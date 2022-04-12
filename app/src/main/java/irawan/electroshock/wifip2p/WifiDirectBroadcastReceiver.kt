@@ -19,9 +19,10 @@ class WifiDirectBroadcastReceiver(
 ): BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val action : String? = intent?.action
+        Log.i("Action : ", "${action}")
         when (action) {
             WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
-                val state:Int = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, 0)
+                val state:Int = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
                 Log.i("WiFi STATUS : ", state.toString())
 //                if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
 //                    Log.i("WiFi STATUS : ", state.toString())
@@ -51,41 +52,14 @@ class WifiDirectBroadcastReceiver(
                 }
 
             }
-            mManager.requestPeers(mChannel, mActivity.peerListListener)
+                Log.i("Peer Listener", "${mActivity.peerListListener}")
+                mManager.requestPeers(mChannel, mActivity.peerListListener)
             }
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
                 // Respond to new connection or disconnections
             }
             WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> {
                 // Respond to this device's wifi state changing
-            }
-        }
-    }
-
-    fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        when (requestCode) {
-            1 -> {
-                if (grantResults.isNotEmpty() && grantResults[0] ==
-                    PackageManager.PERMISSION_GRANTED) {
-                    if ((ContextCompat.checkSelfPermission(mActivity,
-                            Manifest.permission.ACCESS_FINE_LOCATION) ==
-                                PackageManager.PERMISSION_GRANTED)) {
-                        Toast.makeText(
-                            mActivity,
-                            "Permission Granted",
-                            Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(
-                        mActivity,
-                        "Permission Denied",
-                        Toast.LENGTH_SHORT).show()
-                }
-                return
             }
         }
     }
