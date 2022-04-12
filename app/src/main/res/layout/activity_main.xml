@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@color/red_pastel"
-            android:text="@string/wifi_on"
+            android:text="@string/wifi_checker"
             style="?android:attr/buttonBarButtonStyle" />
 
         <Button

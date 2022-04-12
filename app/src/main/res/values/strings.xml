@@ -4,9 +4,9 @@
     <string name="send">Send</string>
     <string name="message">Message</string>
     <string name="discover">discover</string>
-    <string name="wifi_on">Wifi On</string>
-    <string name="on">ON</string>
-    <string name="off">OFF</string>
+    <string name="wifi_checker">Check Wifi Status</string>
+    <string name="on">WiFi ON</string>
+    <string name="off">WiFi OFF</string>
     <string name="discovery">Discovery Started</string>
     <string name="discovery_failed">Discovery Starting Failed</string>
 </resources>

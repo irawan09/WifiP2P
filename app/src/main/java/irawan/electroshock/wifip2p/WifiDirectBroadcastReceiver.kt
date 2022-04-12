@@ -22,9 +22,9 @@ class WifiDirectBroadcastReceiver(
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)){
             val state:Int = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
-                Toast.makeText(context, "WiFi is ON", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "WiFi is ON", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, "WiFi is OFF", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context, "WiFi is OFF", Toast.LENGTH_LONG).show()
             }
         } else if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
             val hasWritePermission:Int = ActivityCompat.checkSelfPermission(

@@ -15,9 +15,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import android.widget.Toast.makeText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import irawan.electroshock.wifip2p.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -53,21 +55,18 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.onOff.setOnClickListener {
+            wifiButtonStateChecker()
             if (wifiManager.isWifiEnabled) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startActivity(Intent(Settings.Panel.ACTION_WIFI))
-                    binding.onOff.text = getString(R.string.off)
                 } else {
                     startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                    binding.onOff.text = getString(R.string.off)
                 }
             } else {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     startActivity(Intent(Settings.Panel.ACTION_WIFI))
-                    binding.onOff.text = getString(R.string.on)
                 } else {
                     startActivity(Intent(Settings.ACTION_WIFI_SETTINGS))
-                    binding.onOff.text = getString(R.string.on)
                 }
             }
         }
@@ -92,16 +91,16 @@ class MainActivity : AppCompatActivity() {
                 }
 
             }
-            mManager.discoverPeers(mChannel, object : WifiP2pManager.ActionListener{
-                override fun onSuccess() {
-                    binding.connectionStatus.text = getString(R.string.discovery)
-                }
-
-                override fun onFailure(p0: Int) {
-                    binding.connectionStatus.text = getString(R.string.discovery_failed)
-                }
-
-            })
+//            mManager.discoverPeers(mChannel, object : WifiP2pManager.ActionListener{
+//                override fun onSuccess() {
+//                    binding.connectionStatus.text = getString(R.string.discovery)
+//                }
+//
+//                override fun onFailure(p0: Int) {
+//                    binding.connectionStatus.text = getString(R.string.discovery_failed)
+//                }
+//
+//            })
         }
 
         binding.sendButton.setOnClickListener {
@@ -167,7 +166,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     override fun onResume() {
         super.onResume()
         registerReceiver(mReceiver, mIntentFilter)
@@ -178,5 +176,13 @@ class MainActivity : AppCompatActivity() {
         unregisterReceiver(mReceiver)
     }
 
-
+    private fun wifiButtonStateChecker(){
+        if (wifiManager.wifiState == 0 || wifiManager.wifiState == 1){
+//            binding.onOff.text = getString(R.string.off)
+            Toast.makeText(applicationContext, "Wifi OFF", Toast.LENGTH_LONG).show()
+        } else {
+//            binding.onOff.text = getString(R.string.on)
+            Toast.makeText(applicationContext, "WiFi ON", Toast.LENGTH_LONG).show()
+        }
+    }
 }
