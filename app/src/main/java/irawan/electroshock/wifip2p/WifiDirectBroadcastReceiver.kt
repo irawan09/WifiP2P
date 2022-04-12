@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.wifi.p2p.WifiP2pManager
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,16 +19,20 @@ class WifiDirectBroadcastReceiver(
 ): BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         val action : String? = intent?.action
-
-        if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)){
-            val state:Int = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1)
-            if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
-//                Toast.makeText(context, "WiFi is ON", Toast.LENGTH_LONG).show()
-            } else {
-//                Toast.makeText(context, "WiFi is OFF", Toast.LENGTH_LONG).show()
+        when (action) {
+            WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION -> {
+                val state:Int = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, 0)
+                Log.i("WiFi STATUS : ", state.toString())
+//                if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED){
+//                    Log.i("WiFi STATUS : ", state.toString())
+//                    Toast.makeText(context, "WiFi is ON", Toast.LENGTH_LONG).show()
+//                } else {
+//                    Toast.makeText(context, "WiFi is OFF", Toast.LENGTH_LONG).show()
+//                    Log.i("WiFi STATUS : ", state.toString())
+//                }
             }
-        } else if(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)){
-            val hasWritePermission:Int = ActivityCompat.checkSelfPermission(
+            WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION -> {
+                val hasWritePermission:Int = ActivityCompat.checkSelfPermission(
                 mActivity,
                 Manifest.permission.ACCESS_FINE_LOCATION)
             if (hasWritePermission != PackageManager.PERMISSION_GRANTED) {
@@ -46,11 +51,15 @@ class WifiDirectBroadcastReceiver(
                 }
 
             }
+//                Log.i("Peer-list Adapter", "${mActivity.peerListListener}")
             mManager.requestPeers(mChannel, mActivity.peerListListener)
-        } else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)){
-            //do something
-        } else if(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)){
-            // do something
+            }
+            WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
+                // Respond to new connection or disconnections
+            }
+            WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> {
+                // Respond to this device's wifi state changing
+            }
         }
     }
 
