@@ -8,11 +8,11 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pDevice
-import android.net.wifi.p2p.WifiP2pDeviceList
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import android.widget.Toast.makeText
@@ -172,10 +172,18 @@ class MainActivity : AppCompatActivity() {
     private fun wifiButtonStateChecker(){
         if (wifiManager.wifiState == 0 || wifiManager.wifiState == 1){
 //            binding.onOff.text = getString(R.string.off)
-            makeText(applicationContext, "Wifi OFF", Toast.LENGTH_LONG).show()
+        Log.i("WiFi State","${wifiManager.wifiState}")
         } else {
 //            binding.onOff.text = getString(R.string.on)
-            makeText(applicationContext, "WiFi ON", Toast.LENGTH_LONG).show()
+            Log.i("WiFi State","${wifiManager.wifiState}")
+            /*
+            It will return a number from 0-4 which indicates if it is on or off.
+            0 = WiFi is being disabled
+            1 = WiFi Disabled
+            2 = WiFi is being enabled
+            3 = WiFi is Enabled
+            4 = Error
+            */
         }
     }
 }
