@@ -9,4 +9,7 @@
     <string name="off">WiFi OFF</string>
     <string name="discovery">Discovery Starting</string>
     <string name="discovery_failed">Discovery Starting Failed</string>
+    <string name="host">Host</string>
+    <string name="client">Client</string>
+    <string name="device_disconnected">Device Disconnected</string>
 </resources>

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
+import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pDevice
 import android.net.wifi.p2p.WifiP2pManager
 import android.os.Build
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import irawan.electroshock.wifip2p.databinding.ActivityMainBinding
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var wifiManager: WifiManager
@@ -27,12 +29,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mChannel: WifiP2pManager.Channel
     private lateinit var mReceiver: BroadcastReceiver
     private lateinit var mIntentFilter: IntentFilter
-    var peers : MutableList<WifiP2pDevice> = mutableListOf()
-    lateinit var deviceNameArray : Array<String?>
-    lateinit var deviceArray : Array<WifiP2pDevice?>
+    private var peers : MutableList<WifiP2pDevice> = mutableListOf()
+    private lateinit var deviceNameArray : Array<String?>
+    private lateinit var deviceArray : Array<WifiP2pDevice?>
+    lateinit var binding : ActivityMainBinding
 
-
-    private lateinit var binding : ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -96,6 +97,28 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
+            binding.peerListView.setOnItemClickListener{ parent, view, position, id ->
+                val device:WifiP2pDevice? = deviceArray[position]
+                val config = WifiP2pConfig()
+                config.deviceAddress = device?.deviceAddress
+
+                mManager.connect(mChannel, config, object : WifiP2pManager.ActionListener{
+                    override fun onSuccess() {
+                        makeText(
+                            applicationContext,
+                            "Connected to"+device?.deviceName,
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onFailure(p0: Int) {
+                        makeText(
+                            applicationContext,
+                            "Not Connected",
+                            Toast.LENGTH_LONG).show()
+                    }
+
+                })
+            }
         }
 
         binding.sendButton.setOnClickListener {
@@ -132,14 +155,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val peerListListener = WifiP2pManager.PeerListListener { peerList ->
+    var peerListListener = WifiP2pManager.PeerListListener { peerList ->
         val refreshedPeers = peerList?.deviceList
-        if(!refreshedPeers?.equals(peers)!!){
+        if (!refreshedPeers?.equals(peers)!!) {
             peers.clear()
             peers.addAll(peerList.deviceList)
 
-            deviceNameArray = arrayOfNulls<String>(peerList.deviceList.size)
-            deviceArray = arrayOfNulls<WifiP2pDevice>(peerList.deviceList.size)
+            deviceNameArray = arrayOfNulls(peerList.deviceList.size)
+            deviceArray = arrayOfNulls(peerList.deviceList.size)
             var index = 0
             peerList.deviceList.forEach { device ->
                 deviceNameArray[index] = device.deviceName
@@ -150,12 +173,23 @@ class MainActivity : AppCompatActivity() {
             val deviceNameAdapter: ArrayAdapter<String> = ArrayAdapter(
                 applicationContext,
                 android.R.layout.simple_list_item_1,
-                deviceNameArray)
+                deviceNameArray
+            )
             binding.peerListView.adapter = deviceNameAdapter
         }
 
-        if (peers.isEmpty()){
-            makeText(applicationContext,"No Device Found", Toast.LENGTH_LONG).show()
+        if (peers.isEmpty()) {
+            makeText(applicationContext, "No Device Found", Toast.LENGTH_LONG).show()
+            return@PeerListListener
+        }
+    }
+
+    var connectionInfoListener = WifiP2pManager.ConnectionInfoListener{ info ->
+        val ownerGroupAddress = info.groupOwnerAddress
+        if (info.groupFormed && info.isGroupOwner){
+            binding.connectionStatus.text = getString(R.string.host)
+        } else if(info.groupFormed){
+            binding.connectionStatus.text = getString(R.string.client)
         }
     }
 

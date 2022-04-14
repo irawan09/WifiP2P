@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.NetworkInfo
 import android.net.wifi.p2p.WifiP2pManager
 import android.util.Log
 import android.widget.Toast
@@ -54,7 +55,14 @@ class WifiDirectBroadcastReceiver(
                 mManager.requestPeers(mChannel, mActivity.peerListListener)
             }
             WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION -> {
-                // Respond to new connection or disconnections
+                val networkInfo = intent.getParcelableExtra<NetworkInfo>(
+                    WifiP2pManager.EXTRA_NETWORK_INFO
+                )
+                if (networkInfo?.isConnected == true) {
+                    mManager.requestConnectionInfo(mChannel, mActivity.connectionInfoListener)
+                } else {
+                    mActivity.binding.connectionStatus.text = mActivity.getString(R.string.device_disconnected)
+                }
             }
             WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION -> {
                 // Respond to this device's wifi state changing
