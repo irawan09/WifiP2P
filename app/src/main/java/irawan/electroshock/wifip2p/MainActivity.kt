@@ -122,7 +122,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.sendButton.setOnClickListener {
-
         }
     }
 
